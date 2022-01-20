@@ -306,66 +306,6 @@ public class DDC1155Service extends BaseService {
     }
 
     /**
-     * DDC的冻结
-     *
-     * @param sender 调用者地址
-     * @param ddcId DDC唯一标识
-     * @return 交易哈希
-     * @throws Exception Exception
-     */
-    public String freeze(String sender,BigInteger ddcId) throws Exception {
-        if (Strings.isEmpty(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_EMPTY);
-        }
-
-        if (!AddressUtils.isValidAddress(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_NOT_ADDRESS_FORMAT);
-        }
-        
-        if (null == ddcId) {
-            throw new DDCException(ErrorMessage.DDCID_IS_WRONG);
-        }
-
-        ArrayList<Object> arrayList = new ArrayList<>();
-        arrayList.add(ddcId);
-
-        ReqJsonRpcBean reqJsonRpcBean = assembleDDC1155Transaction(sender,DDC1155Functions.Freeze, arrayList);
-        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
-        resultCheck(respJsonRpcBean);
-        return (String) respJsonRpcBean.getResult();
-    }
-
-    /**
-     * DDC的解冻
-     *
-     * @param sender 调用者地址
-     * @param ddcId DDC唯一标识
-     * @return 交易哈希
-     * @throws Exception Exception
-     */
-    public String unFreeze(String sender,BigInteger ddcId) throws Exception {
-        if (Strings.isEmpty(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_EMPTY);
-        }
-
-        if (!AddressUtils.isValidAddress(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_NOT_ADDRESS_FORMAT);
-        }
-        
-        if (null == ddcId) {
-            throw new DDCException(ErrorMessage.DDCID_IS_WRONG);
-        }
-
-        ArrayList<Object> arrayList = new ArrayList<>();
-        arrayList.add(ddcId);
-
-        ReqJsonRpcBean reqJsonRpcBean = assembleDDC1155Transaction(sender,DDC1155Functions.UnFreeze, arrayList);
-        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
-        resultCheck(respJsonRpcBean);
-        return (String) respJsonRpcBean.getResult();
-    }
-
-    /**
      * DDC的销毁
      *
      * @param sender 调用者地址
@@ -442,7 +382,6 @@ public class DDC1155Service extends BaseService {
     /**
      * 查询当前账户拥有的DDC的数量
      *
-     * @param sender 调用者地址
      * @param owner 拥有者账户
      * @param ddcId DDCID
      * @return 拥有者账户所对应的DDCID所拥用的数量
@@ -523,6 +462,43 @@ public class DDC1155Service extends BaseService {
         arrayList.add(ddcId);
 
         ReqJsonRpcBean reqJsonRpcBean = assembleDDC1155Transaction(ZeroAddress,DDC1155Functions.DDCURI, arrayList);
+        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
+        resultCheck(respJsonRpcBean);
+
+        InputAndOutputResult inputAndOutputResult = analyzeTransactionRecepitOutput(ConfigCache.get().getDdc1155ABI(), ConfigCache.get().getDdc1155BIN(), respJsonRpcBean.getResult().toString());
+        return inputAndOutputResult.getResult().get(0).getData().toString();
+    }
+
+    /**
+     * 设置URI DDC拥有者和授权者可调用该方法
+     *
+     * @param ddcId ddcId
+     * @return DDCURI
+     * @throws Exception Exception
+     */
+    public String setURI(String sender, BigInteger ddcId, String ddcURI) throws Exception {
+
+        if (Strings.isEmpty(sender)) {
+            throw new DDCException(ErrorMessage.SENDER_IS_EMPTY);
+        }
+
+        if (!AddressUtils.isValidAddress(sender)) {
+            throw new DDCException(ErrorMessage.SENDER_IS_NOT_ADDRESS_FORMAT);
+        }
+
+        if (null == ddcId) {
+            throw new DDCException(ErrorMessage.DDCID_IS_WRONG);
+        }
+
+        if (Strings.isEmpty(ddcURI)) {
+            throw new DDCException(ErrorMessage.DDCURI_IS_EMPTY);
+        }
+
+        ArrayList<Object> arrayList = new ArrayList<>();
+        arrayList.add(ddcId);
+        arrayList.add(ddcURI);
+
+        ReqJsonRpcBean reqJsonRpcBean = assembleDDC1155Transaction(sender, DDC1155Functions.SetURI, arrayList);
         RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
         resultCheck(respJsonRpcBean);
 

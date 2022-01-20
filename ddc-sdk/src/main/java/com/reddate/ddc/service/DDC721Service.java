@@ -332,65 +332,6 @@ public class DDC721Service extends BaseService {
         return (String) respJsonRpcBean.getResult();
     }
 
-
-    /**
-     * 冻结
-     *
-     * @param sender 调用者地址
-     * @param ddcId DDC唯一标识
-     * @return 交易hash
-     * @throws Exception Exception
-     */
-    public String freeze(String sender,BigInteger ddcId) throws Exception {
-        if (Strings.isEmpty(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_EMPTY);
-        }
-
-        if (!AddressUtils.isValidAddress(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_NOT_ADDRESS_FORMAT);
-        }
-
-        if (null == ddcId || ddcId.compareTo(new BigInteger("0")) <= 0) {
-            throw new DDCException(ErrorMessage.DDCID_IS_WRONG);
-        }
-        ArrayList<Object> arrayList = new ArrayList<>();
-        arrayList.add(ddcId);
-
-        ReqJsonRpcBean reqJsonRpcBean = assembleDDC721Transaction(sender,DDC721Functions.FREEZE, arrayList);
-        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
-        resultCheck(respJsonRpcBean);
-        return (String) respJsonRpcBean.getResult();
-    }
-
-    /**
-     * 解冻
-     *
-     * @param sender 调用者地址
-     * @param ddcId DDC唯一标识
-     * @return 交易hash
-     * @throws Exception Exception
-     */
-    public String unFreeze(String sender,BigInteger ddcId) throws Exception {
-        if (Strings.isEmpty(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_EMPTY);
-        }
-
-        if (!AddressUtils.isValidAddress(sender)) {
-            throw new DDCException(ErrorMessage.SENDER_IS_NOT_ADDRESS_FORMAT);
-        }
-
-        if (null == ddcId || ddcId.compareTo(new BigInteger("0")) <= 0) {
-            throw new DDCException(ErrorMessage.DDCID_IS_WRONG);
-        }
-        ArrayList<Object> arrayList = new ArrayList<>();
-        arrayList.add(ddcId);
-
-        ReqJsonRpcBean reqJsonRpcBean = assembleDDC721Transaction(sender,DDC721Functions.UNFREEZE, arrayList);
-        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
-        resultCheck(respJsonRpcBean);
-        return (String) respJsonRpcBean.getResult();
-    }
-
     /**
      * 销毁
      *
@@ -520,6 +461,35 @@ public class DDC721Service extends BaseService {
         arrayList.add(ddcId);
 
         ReqJsonRpcBean reqJsonRpcBean = assembleDDC721Transaction(ZeroAddress,DDC721Functions.DDC_URI, arrayList);
+        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
+        resultCheck(respJsonRpcBean);
+
+        InputAndOutputResult inputAndOutputResult = analyzeTransactionRecepitOutput(ConfigCache.get().getDdc721ABI(), ConfigCache.get().getDdc721BIN(), respJsonRpcBean.getResult().toString());
+        return inputAndOutputResult.getResult().get(0).getData().toString();
+    }
+
+    /**
+     * 设置URI DDC拥有者和授权者可调用该方法
+     * @param sender
+     * @param ddcId
+     * @param ddcURI
+     * @return
+     * @throws Exception
+     */
+    public String setURI(String sender, BigInteger ddcId, String ddcURI) throws Exception {
+        if (null == ddcId || ddcId.compareTo(new BigInteger("0")) <= 0) {
+            throw new DDCException(ErrorMessage.DDCID_IS_WRONG);
+        }
+
+        if (Strings.isEmpty(ddcURI)) {
+            throw new DDCException(ErrorMessage.DDCURI_IS_EMPTY);
+        }
+
+        ArrayList<Object> arrayList = new ArrayList<>();
+        arrayList.add(ddcId);
+        arrayList.add(ddcURI);
+
+        ReqJsonRpcBean reqJsonRpcBean = assembleDDC721Transaction(sender,DDC721Functions.SET_URI, arrayList);
         RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
         resultCheck(respJsonRpcBean);
 
