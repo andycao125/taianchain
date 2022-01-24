@@ -129,7 +129,7 @@ public class DDC1155Service extends BaseService {
     }
 
     /**
-     * DDC的授权
+     * 账户授权
      *
      * @param sender 调用者地址
      * @param operator 授权者账户
@@ -165,7 +165,7 @@ public class DDC1155Service extends BaseService {
     }
 
     /**
-     * DDC的授权查询
+     * 账户的授权查询
      *
      * @param owner    拥有者账户
      * @param operator 授权者账户

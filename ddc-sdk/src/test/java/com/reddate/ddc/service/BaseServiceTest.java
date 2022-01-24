@@ -35,7 +35,7 @@ class BaseServiceTest {
     BaseService baseService = new BaseService();
     static DDCSdkClient ddcSdkClient;
     static {
-        ddcSdkClient = new DDCSdkClient("https://opbtest.bsngate.com:18602/api/Fiscorpc/rpc");
+        ddcSdkClient = new DDCSdkClient("https://opbtest.bsngate.com:18602/api/projectId/rpc");
         Secp256K1SignEventListener signEventListener = null;
         try {
             // 设置签名使用的公私钥
