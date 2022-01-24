@@ -94,7 +94,7 @@ public class AuthorityService extends BaseService {
         if (!AddressUtils.isValidAddress(sender)) {
             throw new DDCException(ErrorMessage.SENDER_IS_NOT_ADDRESS_FORMAT);
         }
-    	
+
         if (Strings.isEmpty(account)) {
             throw new DDCException(ErrorMessage.ACCOUNT_IS_EMPTY);
         }
@@ -117,6 +117,52 @@ public class AuthorityService extends BaseService {
         RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
         resultCheck(respJsonRpcBean);
         return (String) respJsonRpcBean.getResult();
+    }
+
+    /**
+     * 查询合约中角色具有调用权限的方法列表
+     *
+     * @param ddcAddr 合约地址
+     * @param role    角色
+     * @return
+     * @throws Exception
+     */
+    public ArrayList<String> getFunctions(String ddcAddr, AccountRole role) throws Exception {
+
+        if (Strings.isEmpty(ddcAddr)) {
+            throw new DDCException(ErrorMessage.DDC_ADDR_IS_EMPTY);
+        }
+
+        if (!AddressUtils.isValidAddress(ddcAddr)) {
+            throw new DDCException(ErrorMessage.DDC_ADDR_IS_NOT_ADDRESS_FORMAT);
+        }
+
+        if (role == null) {
+            throw new DDCException(ErrorMessage.ROLE_IS_EMPTY);
+        }
+
+        ArrayList<Object> arrayList = new ArrayList<>();
+        arrayList.add(role.getRole());
+        arrayList.add(new Address(ddcAddr));
+
+        ReqJsonRpcBean reqJsonRpcBean = assembleAuthorityTransaction(ZeroAddress, AuthorityFunctions.GetFunction, arrayList);
+        RespJsonRpcBean respJsonRpcBean = restTemplateUtil.sendPost(ConfigCache.get().getOpbGatewayAddress(), reqJsonRpcBean, RespJsonRpcBean.class);
+        resultCheck(respJsonRpcBean);
+        InputAndOutputResult inputAndOutputResult = analyzeTransactionRecepitOutput(ConfigCache.get().getAuthorityLogicABI(), ConfigCache.get().getAuthorityLogicBIN(), (String) respJsonRpcBean.getResult());
+
+        ArrayList<String> list = new ArrayList<>();
+        List<ResultEntity> functionList = inputAndOutputResult.getResult();
+        if (functionList != null) {
+            for (ResultEntity resultEntity : functionList) {
+
+                ArrayList<Bytes4> dataList = (ArrayList<Bytes4>) resultEntity.getTypeObject().getValue();
+                dataList.forEach(data -> {
+                    list.add("0x"+Hex.toHexString(data.getValue()));
+                });
+
+            }
+        }
+        return list;
     }
 
     private ReqJsonRpcBean assembleAuthorityTransaction(String sender,String functionName, ArrayList<Object> params) throws Exception {

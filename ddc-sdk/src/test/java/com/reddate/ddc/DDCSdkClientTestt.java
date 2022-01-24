@@ -9,8 +9,7 @@ public class DDCSdkClientTestt {
 
 	 @Test
 	public void sdkInitTest() throws Exception {
-		 DDCSdkClient sdk = new DDCSdkClient();
-		 sdk.init();
+		 DDCSdkClient sdk = new DDCSdkClient("https://opbtest.bsngate.com:18602/api/Fiscorpc/rpc");
 		 String privateKey = "";
 		 String publicKey = "";
 		 SignEventListener signEventListener =  new Secp256K1SignEventListener(privateKey, publicKey);

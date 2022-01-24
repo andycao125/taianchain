@@ -90,33 +90,8 @@
 
 **Java 1.8 或 更高**
 
-### 配置文件
-
-请参考：src/main/resource/sdk-config.yml
-
-```yaml
-restTemplate:
-  ## HTTP超时时间
-  conTimeout: 60
-  readTimeout: 60
-  ## 网关地址
-  opbGatewayAddress: https://opbtest.bsngate.com:18602/api/2ad7f9e442e2401e8e885b30277724c3/rpc
-
-
-contract:
-  ## 查询交易回执前等待时间，单位为毫秒
-  queryRecepitWaitTime: 200
-  ## 查询交易回执重试次数
-  queryRecepitRetryCount: 20
-  ## DDC721合约地址
-  ddc721Addr: "0x5a7ac17A046003E3048aB749E60EB71988393104"
-  ## DDC1155合约地址
-  ddc1155Addr: "0x727CdAD1C0324E8f236fa5A22F7f13174FF5F9C3"
-  ## 权限逻辑合约地址
-  authorityLogicAddr: "0x3a4E0796e910FCBD55193C1046D6e8Ee0FA97fCF"
-  ## 计费逻辑合约地址
-  chargeLogicAddr: "0xD2b9EF79d3fC992C767fb2E7Fb5E337DF27848D6"
-```
+### 配置说明
+配置信息硬编码到com.reddate.ddc.config.ConfigCache文件中，如需更换相关配置请修改该文件下的信息
 
 ### 调用示例
 
@@ -156,16 +131,37 @@ contract:
 ```
 
 3. 调用合约方法进行DDC的发行、流转
-
 ```
-    // 通过合约的实例进行该合约内方法的调用，此处以发行、流转一个DDC721为例
+    //通过合约的实例进行该合约内方法的调用，此处以发行、查看ddcId、流转一个DDC721为例
+    //发行、查看DDC
     void mint() throws Exception {
-        String tx = getDDC721Service().mint(address, "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63", "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63");
+        String tx = getDDC721Service().mint(consumerAddress, "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63", "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63");
         log.info(tx);
+        assertNotNull(tx);
+        while (true) {
+            TransactionRecepitBean transactionRecepitBean = getDDC721Service().getTransactionRecepit(tx);
+            if (transactionRecepitBean == null) {
+                Thread.sleep(200 * 2);
+                continue;
+            }
+            BlockEventService blockEventService = new BlockEventService();
+            ArrayList result = blockEventService.getBlockEvent(transactionRecepitBean.getBlockNumber());
+            result.forEach(t -> {
+                if (t instanceof DDC721TransferEventBean) {
+                    log.info("{}:DDCID {}", t.getClass(), ((DDC721TransferEventBean) t).getDdcId());
+                }
+            });
+            break;
+        }
+
     }
     
+    //流转DDC
      void transferFrom() throws Exception {
         String tx = getDDC721Service().transferFrom(address, "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63", "0x5c5101afe03b416b9735f40ddc3ba7b0c354a5a0", new BigInteger("1"));
         log.info(tx);
     }
+    
+   
+    
 ```

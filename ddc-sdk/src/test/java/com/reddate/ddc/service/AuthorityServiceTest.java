@@ -18,16 +18,12 @@ public class AuthorityServiceTest extends BaseServiceTest{
     String abi = ConfigCache.get().getAuthorityLogicABI();
     String bin = ConfigCache.get().getAuthorityLogicBIN();
 
+
     @Test
     public void getAccount() throws Exception {
         AuthorityService authorityService = getAuthorityService();
 
-        //AccountInfo accountInfo = authorityService.getAccount("0x179319b482320c74bE043bf0fb3F00411ca12F8d");
-//		AccountInfo accountInfo = authorityService.getAccount("4bab66900062c2b13604324f572fafed28234f0a");
         AccountInfo accountInfo = authorityService.getAccount("0x81072375a506581CADBd90734Bd00A20CdDbE48b");
-//		AccountInfo accountInfo = authorityService.getAccount("0x522bc3e4e29276A13f7b7BE9D404961826a82b11");
-//		AccountInfo accountInfo = authorityService.getAccount("4bab66900062c2b13604324f572fafed28234f0a");
-        // AccountInfo accountInfo = authorityService.getAccount("39db18cb303bce407bded5b0c082c3f193321374");
         System.out.println(accountInfo);
         assertNotNull(accountInfo);
     }
@@ -43,6 +39,17 @@ public class AuthorityServiceTest extends BaseServiceTest{
         String txHash = authorityService.updateAccState(consumerAddress,account, AccountState.Active, false);
         assertNotNull(txHash);
         log.info(analyzeRecepit(txHash,abi,bin));
+    }
+
+    @Test
+    public void getFunctions() throws Exception {
+        AuthorityService authorityService = getAuthorityService();
+        List<String> sigList = authorityService.getFunctions(ConfigCache.get().getDdc721Address(), AccountRole.Consumer);
+        assertNotNull(sigList);
+        for (int i = 0; i < sigList.size(); i++) {
+            System.out.println(sigList.get(i));
+        }
+
     }
 
 }

@@ -2,44 +2,43 @@ package com.reddate.ddc.config;
 
 public class ConfigInfo {
 
-    //HTTP timeout unit : s
-    private Integer conTimeout = 60;
-    
-    private Integer readTimeout = 60;
+	//HTTP timeout unit : s
+	private Integer conTimeout = 60;
 
-    private String opbGatewayAddress = "http://192.168.1.57:8545";
+	private Integer readTimeout = 60;
 
-    private String ddc721ABI;
+	private String opbGatewayAddress = "";
 
-    private String ddc721BIN;
+	//开放联盟链网关启用x-api-key后需设置将该值
+	private String apiKey = "";
 
-    private String ddc721Address;
+	private String ddc721ABI;
 
-    private String ddc1155ABI;
-    
-    private String ddc1155BIN;
-    
-    private String ddc1155Address;
+	private String ddc721BIN;
 
-    private String authorityLogicABI;
-    
-    private String authorityLogicBIN;
-   
-    private String authorityLogicAddress;
+	private String ddc721Address;
 
-    private String chargeLogicABI;
-    
-    private String chargeLogicBIN;
-   
-    private String chargeLogicAddress;
+	private String ddc1155ABI;
 
-    private String privateKey;
-    
-    private String publicKey;
-    
-    private Long queryRecepitWaitTime = 300L;
-    
-    private Integer queryRecepitRetryCount = 10;
+	private String ddc1155BIN;
+
+	private String ddc1155Address;
+
+	private String authorityLogicABI;
+
+	private String authorityLogicBIN;
+
+	private String authorityLogicAddress;
+
+	private String chargeLogicABI;
+
+	private String chargeLogicBIN;
+
+	private String chargeLogicAddress;
+
+	private Long queryRecepitWaitTime = 300L;
+
+	private Integer queryRecepitRetryCount = 20;
 
 	public Integer getConTimeout() {
 		return conTimeout;
@@ -63,6 +62,14 @@ public class ConfigInfo {
 
 	public void setOpbGatewayAddress(String opbGatewayAddress) {
 		this.opbGatewayAddress = opbGatewayAddress;
+	}
+
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
 	}
 
 	public String getDdc721ABI() {
@@ -161,22 +168,6 @@ public class ConfigInfo {
 		this.chargeLogicAddress = chargeLogicAddress;
 	}
 
-	public String getPrivateKey() {
-		return privateKey;
-	}
-
-	public void setPrivateKey(String privateKey) {
-		this.privateKey = privateKey;
-	}
-
-	public String getPublicKey() {
-		return publicKey;
-	}
-
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
-	}
-
 	public Long getQueryRecepitWaitTime() {
 		return queryRecepitWaitTime;
 	}
@@ -192,5 +183,5 @@ public class ConfigInfo {
 	public void setQueryRecepitRetryCount(Integer queryRecepitRetryCount) {
 		this.queryRecepitRetryCount = queryRecepitRetryCount;
 	}
-	
+
 }

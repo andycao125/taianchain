@@ -1,10 +1,17 @@
 package com.reddate.ddc.service;
 
 import com.reddate.ddc.config.ConfigCache;
+import com.reddate.ddc.dto.ddc.DDC721TransferEventBean;
+import com.reddate.ddc.dto.taianchain.TransactionRecepitBean;
 import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.web3j.protocol.exceptions.TransactionException;
+import org.fisco.bcos.web3j.tx.txdecode.BaseException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -18,8 +25,22 @@ class DDC721ServiceTest extends BaseServiceTest{
     void mint() throws Exception {
         String tx = getDDC721Service().mint(consumerAddress, "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63", "0xb0031Aa7725A6828BcCE4F0b90cFE451C31c1e63");
         log.info(tx);
-        log.info(analyzeRecepit(tx,abi,bin));
         assertNotNull(tx);
+        while (true) {
+            TransactionRecepitBean transactionRecepitBean = getDDC721Service().getTransactionRecepit(tx);
+            if (transactionRecepitBean == null) {
+                Thread.sleep(200 * 2);
+                continue;
+            }
+            BlockEventService blockEventService = new BlockEventService();
+            ArrayList result = blockEventService.getBlockEvent(transactionRecepitBean.getBlockNumber());
+            result.forEach(t -> {
+                if (t instanceof DDC721TransferEventBean) {
+                    log.info("{}:DDCID {}", t.getClass(), ((DDC721TransferEventBean) t).getDdcId());
+                }
+            });
+            break;
+        }
     }
 
     @Test
