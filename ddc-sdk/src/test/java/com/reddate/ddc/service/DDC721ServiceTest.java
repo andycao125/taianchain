@@ -4,16 +4,13 @@ import com.reddate.ddc.config.ConfigCache;
 import com.reddate.ddc.dto.ddc.DDC721TransferEventBean;
 import com.reddate.ddc.dto.taianchain.TransactionRecepitBean;
 import lombok.extern.slf4j.Slf4j;
-import org.fisco.bcos.web3j.protocol.exceptions.TransactionException;
-import org.fisco.bcos.web3j.tx.txdecode.BaseException;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @Slf4j
 class DDC721ServiceTest extends BaseServiceTest{

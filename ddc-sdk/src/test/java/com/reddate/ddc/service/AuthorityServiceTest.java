@@ -7,10 +7,10 @@ import com.reddate.ddc.dto.ddc.AccountState;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @Slf4j
 public class AuthorityServiceTest extends BaseServiceTest{

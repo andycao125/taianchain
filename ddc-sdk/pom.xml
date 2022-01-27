@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.0.RELEASE</version>
+		<version>2.6.0</version>
 		<relativePath />
 	</parent>
 	<groupId>org.reddate.ddc</groupId>
@@ -54,11 +54,13 @@
 			<version>1.2.70</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>28.2-jre</version>
+			<version>30.0-jre</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.fisco.solc</groupId>
@@ -79,7 +81,7 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.63</version>
+			<version>1.69</version>
 		</dependency>
 
 
